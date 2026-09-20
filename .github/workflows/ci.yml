@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  frontend:
+    name: Frontend (React Native)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci;
+          elif [ -f package.json ]; then npm install;
+          else echo "No package.json yet — skipping install"; fi
+      - name: Lint
+        run: npm run lint --if-present
+      - name: Type check
+        run: npm run typecheck --if-present
+      - name: Test
+        run: npm test --if-present
+
+  backend:
+    name: Backend (NestJS)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci;
+          elif [ -f package.json ]; then npm install;
+          else echo "No package.json yet — skipping install"; fi
+      - name: Lint
+        run: npm run lint --if-present
+      - name: Build
+        run: npm run build --if-present
+      - name: Test
+        run: npm test --if-present
+
+  ai-service:
+    name: AI Service (FastAPI)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ai-service
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt;
+          else echo "No requirements.txt yet — skipping install"; fi
+      - name: Test
+        run: |
+          if [ -f requirements.txt ]; then pytest;
+          else echo "No tests yet — skipping"; fi
