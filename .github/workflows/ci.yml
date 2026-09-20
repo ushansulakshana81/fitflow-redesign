@@ -24,11 +24,11 @@ jobs:
           elif [ -f package.json ]; then npm install;
           else echo "No package.json yet — skipping install"; fi
       - name: Lint
-        run: npm run lint --if-present
+        run: if [ -f package.json ]; then npm run lint --if-present; else echo "No package.json yet - skipping lint"; fi
       - name: Type check
-        run: npm run typecheck --if-present
+        run: if [ -f package.json ]; then npm run typecheck --if-present; else echo "No package.json yet - skipping typecheck"; fi
       - name: Test
-        run: npm test --if-present
+        run: if [ -f package.json ]; then npm test --if-present; else echo "No package.json yet - skipping tests"; fi
 
   backend:
     name: Backend (NestJS)
@@ -47,11 +47,11 @@ jobs:
           elif [ -f package.json ]; then npm install;
           else echo "No package.json yet — skipping install"; fi
       - name: Lint
-        run: npm run lint --if-present
+        run: if [ -f package.json ]; then npm run lint --if-present; else echo "No package.json yet - skipping lint"; fi
       - name: Build
-        run: npm run build --if-present
+        run: if [ -f package.json ]; then npm run build --if-present; else echo "No package.json yet - skipping build"; fi
       - name: Test
-        run: npm test --if-present
+        run: if [ -f package.json ]; then npm test --if-present; else echo "No package.json yet - skipping tests"; fi
 
   ai-service:
     name: AI Service (FastAPI)
